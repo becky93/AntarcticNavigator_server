@@ -1,0 +1,9 @@
+/server/modisdownload/Data
+/server/modisProcessing/MODIS
+/server/modisProcessing/Model
+/server/test
+*.txt
+*.log
+*.pyc
+*.jpg
+*.npy
