@@ -76,26 +76,20 @@ class check_process(threading.Thread):
                 fileset = sorted(fileset, reverse=True)
                 print fileset
 
-                if zero_mark and value != self.cu_range:
-                    if fileset != []:
+                if fileset != []:
+                    if zero_mark and value != self.cu_range:
                         newfilename = fileset[0].split('_')[0] + '_CURRENT_RASTER_1000'
                         from modisProcessing import RasterManagement
                         RasterManagement.cropandmask(WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord, newfilename)
 
-                if os.path.exists('test/'):
-                    shutil.rmtree('test/')
-                os.mkdir('test/')
-                for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
-                    for filename in filenames:
-                        if fileset == []:
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.lonlat', 'test/' + newnewfilename + '_crop.lonlat')
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.prob', 'test/' + newnewfilename + '_crop.prob')
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.jpg', 'test/' + newnewfilename + '_crop.jpg')
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.cost', 'test/' + newnewfilename + '_crop.cost')
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.ice', 'test/' + newnewfilename + '_crop.ice')
-                        elif fileset[0] in filename and (not filename.endswith('.tif')):
-                            print filename
-                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
+                    if os.path.exists('test/'):
+                        shutil.rmtree('test/')
+                    os.mkdir('test/')
+                    for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
+                        for filename in filenames:
+                            if fileset[0] in filename and (not filename.endswith('.tif')):
+                                print filename
+                                shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
 
                 # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.lonlat', 'test/' + newfilename + '.lonlat')
                 # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.prob', 'test/' + newfilename + '.prob')
