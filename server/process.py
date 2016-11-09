@@ -37,11 +37,12 @@ class check_process(threading.Thread):
             print value
             values = value.split(' ')
             print(values)
-
             EastBoundingCoord = float(values[1])
             WestBoundingCoord = float(values[0])
             SouthBoundingCoord = float(values[3])
             NorthBoundingCoord = float(values[2])
+
+            newnewfilename = ''
 
             for filename in filelist:
                 src_file = src + filename + ".hdf"
@@ -49,11 +50,12 @@ class check_process(threading.Thread):
                 if os.path.exists(dst_file):
                     continue
                 else:
-                    from shutil import move
-                    move(src_file, dst_file)
+                    # from shutil import move
+                    # move(src_file, dst_file)
+                    os.rename(src_file, dst_file)
 
                     print('preprocess file "%s"......' % filename)
-                    modisProcessing.main_processing.updateRaster(filename, WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord)
+                    newnewfilename = modisProcessing.main_processing.updateRaster(filename, WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord)
 
             zero_mark = False
             if len(filelist) != 0:
@@ -74,31 +76,37 @@ class check_process(threading.Thread):
                 fileset = sorted(fileset, reverse=True)
                 print fileset
 
-                if fileset != []:
-                    if zero_mark and value != self.cu_range:
+                if zero_mark and value != self.cu_range:
+                    if fileset != []:
                         newfilename = fileset[0].split('_')[0] + '_CURRENT_RASTER_1000'
                         from modisProcessing import RasterManagement
                         RasterManagement.cropandmask(WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord, newfilename)
 
-                    if os.path.exists('test/'):
-                        shutil.rmtree('test/')
-                    os.mkdir('test/')
-                    for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
-                        for filename in filenames:
-                            if fileset[0] in filename and (not filename.endswith('.tif')):
-                                print filename
-                                shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
+                if os.path.exists('test/'):
+                    shutil.rmtree('test/')
+                os.mkdir('test/')
+                for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
+                    for filename in filenames:
+                        if fileset == []:
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.lonlat', 'test/' + newnewfilename + '_crop.lonlat')
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.prob', 'test/' + newnewfilename + '_crop.prob')
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.jpg', 'test/' + newnewfilename + '_crop.jpg')
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.cost', 'test/' + newnewfilename + '_crop.cost')
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.ice', 'test/' + newnewfilename + '_crop.ice')
+                        elif fileset[0] in filename and (not filename.endswith('.tif')):
+                            print filename
+                            shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
 
-                    # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.lonlat', 'test/' + newfilename + '.lonlat')
-                    # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.prob', 'test/' + newfilename + '.prob')
-                    # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.jpg', 'test/' + newfilename + '.jpg')
-                    # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.cost', 'test/' + newfilename + '.cost')
-                    # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.ice', 'test/' + newfilename + '.ice')
+                # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.lonlat', 'test/' + newfilename + '.lonlat')
+                # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.prob', 'test/' + newfilename + '.prob')
+                # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.jpg', 'test/' + newfilename + '.jpg')
+                # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.cost', 'test/' + newfilename + '.cost')
+                # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newfilename + '_crop.ice', 'test/' + newfilename + '.ice')
 
-                    import sendemail
-                    from mailutil import getemailpsw
-                    email, psw = getemailpsw(2)
-                    sendemail.send_file_zipped('test', ['PolarRecieveZip@lamda.nju.edu.cn'], psw, email)
+                import sendemail
+                from mailutil import getemailpsw
+                email, psw = getemailpsw(2)
+                sendemail.send_file_zipped('test', ['PolarRecieveZip@lamda.nju.edu.cn'], psw, email)
             else:
                 print 'no modis file updated'
 
