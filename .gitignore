@@ -7,3 +7,5 @@
 *.pyc
 *.jpg
 *.npy
+*.hdr
+*.prm
