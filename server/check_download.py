@@ -127,7 +127,7 @@ if __name__=="__main__":
     # parser.add_argument('--specified_email', help = 'specified_email', type = str, default = 'PolarSendReq@lamda.nju.edu.cn')
     args = parser.parse_args()
     interval_check = 600
-    interval_down = 1800
+    interval_down = 1200
     queue = Queue.Queue(1)
 
     emailcheck = check_mail(interval_check, parser)
