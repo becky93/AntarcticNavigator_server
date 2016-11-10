@@ -453,12 +453,15 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     os.rename(namefull, folder + fname + '.cost')
     # print prob.shape
 
-    jpg = Image.open(jpgfile)
-    # print jpg.size
-    jpg_crop = jpg.crop((uli, ulj, lri, lrj))
-    # print jpg_crop.size
-    jpg_crop.save(folder + fname + '_crop.jpg')
-
+    try:
+        jpg = Image.open(jpgfile)
+        # print jpg.size
+        jpg_crop = jpg.crop((uli, ulj, lri, lrj))
+        # print jpg_crop.size
+        jpg_crop.save(folder + fname + '_crop.jpg')
+    except:
+        return False
+    
     lonlat_crop = lonlat[ulj/5:lrj/5, uli/5:lri/5, :]
     # print lonlat_crop.shape
     pickle.dump(lonlat_crop, open(folder + fname + '_crop.lonlat', 'wb'), protocol=2)
@@ -520,6 +523,8 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     name = folder + fname + '_crop.png'
     scipy.misc.imsave(name, color)
     os.rename(name, folder + fname + '_crop.cost')
+    
+    return True
 
 
     
