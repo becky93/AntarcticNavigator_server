@@ -1,6 +1,8 @@
 import time
 import argparse
+import numpy as np
 from getemail import checkemail
+from getBounding import getCornerLonLats
 import modisdownload.Get_Modis
 
 import threading
@@ -90,10 +92,26 @@ class download_hdf(threading.Thread):
                         print 'from queue get ' + value
                         values = value.split(' ')
                         # print values
-                        EastBoundingCoord = float(values[1])
-                        WestBoundingCoord = float(values[0])
-                        SouthBoundingCoord = float(values[3])
-                        NorthBoundingCoord = float(values[2])
+                        rightlon = float(values[1])
+                        leftlon = float(values[0])
+                        rightlat = float(values[3])
+                        leftlat = float(values[2])
+
+                        lonlist, latlist = getCornerLonLats(leftlon, leftlat, rightlon, rightlat)
+                        SouthBoundingCoord = np.min(latlist)
+                        NorthBoundingCoord = np.max(latlist)
+
+                        for i in range(len(lonlist)):
+                            if lonlist[i] < 0:
+                                lonlist[i] = lonlist[i] + 360
+
+                        EastBoundingCoord = np.min(lonlist)
+                        WestBoundingCoord = np.max(lonlist)
+
+                        if EastBoundingCoord > 180:
+                            EastBoundingCoord = EastBoundingCoord - 360
+                        if WestBoundingCoord > 180:
+                            WestBoundingCoord = WestBoundingCoord - 360
 
                         done = modisdownload.Get_Modis.maindownloading(EastBoundingCoord, WestBoundingCoord, SouthBoundingCoord, NorthBoundingCoord)
                         # import random
