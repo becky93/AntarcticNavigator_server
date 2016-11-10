@@ -37,10 +37,12 @@ class check_process(threading.Thread):
             print value
             values = value.split(' ')
             print(values)
-            EastBoundingCoord = float(values[1])
-            WestBoundingCoord = float(values[0])
-            SouthBoundingCoord = float(values[3])
-            NorthBoundingCoord = float(values[2])
+            rightlon = float(values[1])
+            leftlon = float(values[0])
+            rightlat = float(values[3])
+            leftlat = float(values[2])
+
+            iscrop = True
 
             for filename in filelist:
                 src_file = src + filename + ".hdf"
@@ -53,7 +55,7 @@ class check_process(threading.Thread):
                     # os.rename(src_file, dst_file)
 
                     print('preprocess file "%s"......' % filename)
-                    modisProcessing.main_processing.updateRaster(filename, WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord)
+                    newname, iscrop = modisProcessing.main_processing.updateRaster(filename, leftlon, leftlat, rightlon, rightlat)
 
             zero_mark = False
             if len(filelist) != 0:
@@ -75,11 +77,10 @@ class check_process(threading.Thread):
                 print fileset
 
                 if fileset != []:
-                    iscrop = True
                     if zero_mark and value != self.cu_range:
                         newfilename = fileset[0].split('_')[0] + '_CURRENT_RASTER_1000'
                         from modisProcessing import RasterManagement
-                        iscrop = RasterManagement.cropandmask(WestBoundingCoord, NorthBoundingCoord, EastBoundingCoord, SouthBoundingCoord, newfilename)
+                        iscrop = RasterManagement.cropandmask(leftlon, leftlat, rightlon, rightlat, newfilename)
 
                     if iscrop:
                         if os.path.exists('test/'):
