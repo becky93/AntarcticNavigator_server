@@ -105,13 +105,20 @@ class download_hdf(threading.Thread):
                             if lonlist[i] < 0:
                                 lonlist[i] = lonlist[i] + 360
 
-                        EastBoundingCoord = np.min(lonlist)
-                        WestBoundingCoord = np.max(lonlist)
+                        maxCoord = np.max(lonlist)
+                        minCoord = np.min(lonlist)
 
-                        if EastBoundingCoord > 180:
-                            EastBoundingCoord = EastBoundingCoord - 360
-                        if WestBoundingCoord > 180:
-                            WestBoundingCoord = WestBoundingCoord - 360
+                        if maxCoord > 180:
+                            maxCoord = maxCoord - 360
+                        if minCoord > 180:
+                            minCoord = minCoord - 360
+
+                        if maxCoord*minCoord < 0 and abs(maxCoord-minCoord) < 180:
+                            EastBoundingCoord = minCoord
+                            WestBoundingCoord = maxCoord
+                        else:
+                            EastBoundingCoord = maxCoord
+                            WestBoundingCoord = minCoord
 
                         done = modisdownload.Get_Modis.maindownloading(EastBoundingCoord, WestBoundingCoord, SouthBoundingCoord, NorthBoundingCoord)
                         # import random
