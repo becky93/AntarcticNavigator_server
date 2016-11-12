@@ -413,7 +413,8 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
             AUTHORITY["EPSG","8901"]],
         UNIT["degree",0.01745329251994328,
             AUTHORITY["EPSG","9122"]],
-        AUTHORITY["EPSG","4326"]]"""
+
+AUTHORITY["EPSG","4326"]]"""
     wgs84SpatialRef = osr.SpatialReference()
     wgs84SpatialRef.ImportFromWkt(wgs84_wkt)
 
@@ -450,6 +451,8 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     colorfull = getRGBfromProb(prob[:,:,2])
     namefull = folder + fname + '.png'
     scipy.misc.imsave(namefull, colorfull)
+    if os.path.exists(folder + fname + '.cost'):
+        os.remove(folder + fname + '.cost')
     os.rename(namefull, folder + fname + '.cost')
     # print prob.shape
 
@@ -522,6 +525,8 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     color = getRGBfromProb(prob_crop[:,:,2])
     name = folder + fname + '_crop.png'
     scipy.misc.imsave(name, color)
+    if os.path.exists(folder + fname + '_crop.cost'):
+        os.remove(folder + fname + '_crop.cost')
     os.rename(name, folder + fname + '_crop.cost')
     
     return True
