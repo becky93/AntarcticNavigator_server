@@ -72,7 +72,6 @@ def print_info(msg, indent=0):
             # print('%sText: %s' % ('  ' * indent, content + '...'))
         # else:
 ##            # print('%sAttachment: %s' % ('  ' * indent, content_type))
-
     return None
 
 # 连接到POP3服务器:
@@ -118,8 +117,8 @@ def checkemail(email,password,pop3_server,prenum):
                 subj = print_info(msg)
                 if subj != None:
                     print(subj)
-                    for i in range(index):
-		                server.dele(i+1)
+                    # for i in range(index):
+		    #     server.dele(i+1)
                     server.quit()
                     return index,subj
         except Exception as e:
