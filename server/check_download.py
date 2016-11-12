@@ -21,7 +21,6 @@ class check_mail(threading.Thread):
 
     def run(self):
         self.check_mail(self.interval, self.command)
-
     def check_mail(self, interval, command):
         print_ts("-"*100)
         print_ts("Command %s"%command)
@@ -36,12 +35,12 @@ class check_mail(threading.Thread):
                 time.sleep(time_remaining)
                 print_ts("Starting command.")
 
-                # if start == True:
-                #     # status = os.system(command)
-                #     prenum = 0
-                #     start = False
+                if start == True:
+                    # status = os.system(command)
+                    prenum = 0
+                    start = False
 
-                prenum, subj = checkemail(args.email,args.password,args.pop3_server,0)
+                prenum, subj = checkemail(args.email,args.password,args.pop3_server,prenum)
                 # import random
                 # if random.uniform(0, 1) > 0.5:
                 #     subj = None
