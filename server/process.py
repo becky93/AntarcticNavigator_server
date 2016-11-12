@@ -72,13 +72,13 @@ class check_process(threading.Thread):
                 for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
                     for filename in filenames:
                         if filename.split('.')[0].endswith('_crop'):
-                            fileset.add(filename.split('.')[0])
+                            fileset.add(int(filename.split('.')[0].split('_')[0]))
                 fileset = sorted(fileset, reverse=True)
                 print fileset
 
                 if fileset != []:
                     if zero_mark and value != self.cu_range:
-                        newfilename = fileset[0].split('_')[0] + '_CURRENT_RASTER_1000'
+                        newfilename = str(fileset[0]) + '_CURRENT_RASTER_1000'
                         from modisProcessing import RasterManagement
                         iscrop = RasterManagement.cropandmask(leftlon, leftlat, rightlon, rightlat, newfilename)
 
@@ -88,7 +88,7 @@ class check_process(threading.Thread):
                         os.mkdir('test/')
                         for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
                             for filename in filenames:
-                                if fileset[0] in filename and (not filename.endswith('.tif')):
+                                if str(fileset[0]) in filename and (not filename.endswith('.tif')):
                                     print filename
                                     shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
 
