@@ -71,7 +71,7 @@ def print_info(msg, indent=0):
                 content = content.decode(charset)
             # print('%sText: %s' % ('  ' * indent, content + '...'))
         # else:
-            # print('%sAttachment: %s' % ('  ' * indent, content_type))
+##            # print('%sAttachment: %s' % ('  ' * indent, content_type))
 
     return None
 
@@ -128,7 +128,7 @@ def checkemail(email,password,pop3_server,prenum):
             continue
 
 	# 可以根据邮件索引号直接从服务器删除邮件:
-	server.dele(index)
+	# server.dele(index)
 	# 关闭连接:
 	server.quit()
 	return index,None
