@@ -36,7 +36,15 @@ def send_file_zipped(the_file, recipients, passwd, sender='fanying_yt@163.com'):
     mail_host = "lamda.nju.edu.cn"
     # Create the message
     themsg = MIMEMultipart()
-    themsg['Subject'] = '[south]File %s' % the_file
+    
+    import time
+    statinfo = os.stat('range.txt')
+    c_time = time.localtime(statinfo.st_ctime)
+    l_time = ''
+    for i in range(0, 5):
+        l_time = l_time + '{:02d}'.format(c_time[i])
+
+    themsg['Subject'] = '[south]File %s' % the_file + ' ' + l_time
     themsg['To'] = ', '.join(recipients)
     themsg['From'] = sender
     themsg.preamble = 'I am not using a MIME-aware mail reader.\n'
