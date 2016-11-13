@@ -44,7 +44,7 @@ class check_process(threading.Thread):
 
             iscrop = True
 
-            for filename in filelist:
+             for filename in filelist:
                 src_file = src + filename + ".hdf"
                 dst_file = dst + filename + ".hdf"
                 if os.path.exists(dst_file):
@@ -88,7 +88,7 @@ class check_process(threading.Thread):
                         os.mkdir('test/')
                         for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
                             for filename in filenames:
-                                if str(fileset[0]) in filename and (not filename.endswith('.tif')):
+                                if str(fileset[0]) in filename and (not filename.endswith('.tif')) and 'crop' in filename:
                                     print filename
                                     shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
 
