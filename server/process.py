@@ -88,7 +88,7 @@ class check_process(threading.Thread):
                         os.mkdir('test/')
                         for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
                             for filename in filenames:
-                                if str(fileset[0]) in filename and (not filename.endswith('.tif')) and 'crop' in filename:
+                                if str(fileset[0]) == filename.split('.')[0].split('_')[0] and (not filename.endswith('.tif')) and 'crop' in filename:
                                     print filename
                                     shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + filename, 'test/' + filename)
 
