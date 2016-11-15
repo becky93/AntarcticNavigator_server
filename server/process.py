@@ -101,7 +101,7 @@ class check_process(threading.Thread):
                         import sendemail
                         from mailutil import getemailpsw
                         email, psw = getemailpsw(2)
-                        sendemail.send_file_zipped('test', ['PolarRecieveZip@lamda.nju.edu.cn'], psw, email)
+                        sendemail.send_file_zipped('test', ['PolarRecieveZip@lamda.nju.edu.cn'], psw, email, fileset[0])
             else:
                 print 'no modis file updated'
 
