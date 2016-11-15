@@ -25,7 +25,7 @@ def zip_dir(zf,dirname):
         zip.write(tar,arcname)
     zip.close()
 
-def send_file_zipped(the_file, recipients, passwd, sender='fanying_yt@163.com'):
+def send_file_zipped(the_file, recipients, passwd, sender, num):
     zf = tempfile.TemporaryFile(prefix='mail', suffix='.zip')
     # zip = zipfile.ZipFile(zf, 'w')
     # zip.write(the_file)
@@ -44,7 +44,7 @@ def send_file_zipped(the_file, recipients, passwd, sender='fanying_yt@163.com'):
     for i in range(0, 5):
         l_time = l_time + '{:02d}'.format(c_time[i])
 
-    themsg['Subject'] = '[south]File %s' % the_file + ' ' + l_time
+    themsg['Subject'] = '[south]File %s' % the_file + ' ' + l_time + str(num)
     themsg['To'] = ', '.join(recipients)
     themsg['From'] = sender
     themsg.preamble = 'I am not using a MIME-aware mail reader.\n'
