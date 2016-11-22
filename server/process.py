@@ -26,8 +26,7 @@ class check_process(threading.Thread):
 
             for dirpath, dirnames, filenames in os.walk(src):
                 for filename in filenames:
-                    if filename.startswith('MOD') and filename.endswith('.hdf'):
-                        filelist.append('.'.join(filename.split('.')[0:-1]))
+                    if filename.startswith('MOD') and filename.endswith('.hdf'):                        filelist.append('.'.join(filename.split('.')[0:-1]))
             filelist.sort()
             print(filelist)
 
@@ -44,7 +43,7 @@ class check_process(threading.Thread):
 
             iscrop = True
 
-             for filename in filelist:
+            for filename in filelist:
                 src_file = src + filename + ".hdf"
                 dst_file = dst + filename + ".hdf"
                 if os.path.exists(dst_file):
