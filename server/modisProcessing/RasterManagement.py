@@ -413,8 +413,7 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
             AUTHORITY["EPSG","8901"]],
         UNIT["degree",0.01745329251994328,
             AUTHORITY["EPSG","9122"]],
-
-AUTHORITY["EPSG","4326"]]"""
+        AUTHORITY["EPSG","4326"]]"""
     wgs84SpatialRef = osr.SpatialReference()
     wgs84SpatialRef.ImportFromWkt(wgs84_wkt)
 
@@ -456,18 +455,22 @@ AUTHORITY["EPSG","4326"]]"""
     os.rename(namefull, folder + fname + '.cost')
     # print prob.shape
 
-    try:
-        jpg = Image.open(jpgfile)
-        # print jpg.size
-        jpg_crop = jpg.crop((uli, ulj, lri, lrj))
-        # print jpg_crop.size
-        jpg_crop.save(folder + fname + '_crop.jpg')
-    except:
-        return False
-    
+    jpg = Image.open(jpgfile)
+    width = jpg.size[0]
+    height = jpg.size[1]
+    if not (uli >=0 and ulj >=0 and lri <= width and lrj <= height):
+        return False, ''
+
+    cu_time = time.strftime("%Y%m%d%H%M%S",time.localtime(time.time()))
+    crop_name = cu_time + '_CURRENT_RASTER_1000'
+    # print jpg.size
+    jpg_crop = jpg.crop((uli, ulj, lri, lrj))
+    # print jpg_crop.size
+    jpg_crop.save(folder + crop_name + '_crop.jpg')
+
     lonlat_crop = lonlat[ulj/5:lrj/5, uli/5:lri/5, :]
     # print lonlat_crop.shape
-    pickle.dump(lonlat_crop, open(folder + fname + '_crop.lonlat', 'wb'), protocol=2)
+    pickle.dump(lonlat_crop, open(folder + crop_name + '_crop.lonlat', 'wb'), protocol=2)
 
     # jpg_crop_mask_array = np.array(jpg_crop)
     # print jpg_crop_mask_array.shape
@@ -516,20 +519,20 @@ AUTHORITY["EPSG","4326"]]"""
                 #     prob_crop[i,j,1] = 0.8*prob_crop[i,j,1]
                 #     prob_crop[i,j,2] = 0.8*prob_crop[i,j,2]
     # print prob_crop.shape
-    pickle.dump(prob_crop, open(folder + fname + '_crop.prob', 'wb'), protocol=2)
-    pickle.dump(ice_crop, open(folder + fname + '_crop.ice', 'wb'), protocol=2)
+    pickle.dump(prob_crop, open(folder + crop_name + '_crop.prob', 'wb'), protocol=2)
+    pickle.dump(ice_crop, open(folder + crop_name + '_crop.ice', 'wb'), protocol=2)
 
     # jpg_crop_mask = Image.fromarray(jpg_crop_mask_array)
     # jpg_crop_mask.save(folder + fname + '_crop_mask.jpg')
 
     color = getRGBfromProb(prob_crop[:,:,2])
-    name = folder + fname + '_crop.png'
+    name = folder + crop_name + '_crop.png'
     scipy.misc.imsave(name, color)
-    if os.path.exists(folder + fname + '_crop.cost'):
-        os.remove(folder + fname + '_crop.cost')
-    os.rename(name, folder + fname + '_crop.cost')
-    
-    return True
+    if os.path.exists(folder + crop_name + '_crop.cost'):
+        os.remove(folder + crop_name + '_crop.cost')
+    os.rename(name, folder + crop_name + '_crop.cost')
+
+    return True, crop_name
 
 
     
