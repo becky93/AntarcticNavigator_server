@@ -70,7 +70,7 @@ class check_process(threading.Thread):
                 fileset = set()
                 for dripath, dirnames, filenames in os.walk('modisProcessing/MODIS/tiff/arcmapWorkspace/'):
                     for filename in filenames:
-                        if filename.split('.')[0].endswith('_crop'):
+                        if filename.endswith('.tif'):
                             fileset.add(int(filename.split('.')[0].split('_')[0]))
                 fileset = sorted(fileset, reverse=True)
                 print fileset
