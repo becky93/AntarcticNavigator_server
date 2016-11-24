@@ -11,7 +11,8 @@ def clear_raster(folder = 'modisProcessing/MODIS/tiff/arcmapWorkspace/'):
     indexset = set()
     for dripath, dirnames, filenames in os.walk(folder):
         for filename in filenames:
-            indexset.add(int(filename.split('.')[0].split('_')[0]))
+            if not 'crop' in filename:
+                indexset.add(int(filename.split('.')[0].split('_')[0]))
     print indexset
     if len(indexset) <= 2:
         return
