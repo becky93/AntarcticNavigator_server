@@ -26,7 +26,8 @@ class check_process(threading.Thread):
 
             for dirpath, dirnames, filenames in os.walk(src):
                 for filename in filenames:
-                    if filename.startswith('MOD') and filename.endswith('.hdf'):                        filelist.append('.'.join(filename.split('.')[0:-1]))
+                    if filename.startswith('MOD') and filename.endswith('.hdf'):                        
+                        filelist.append('.'.join(filename.split('.')[0:-1]))
             filelist.sort()
             print(filelist)
 
@@ -54,7 +55,7 @@ class check_process(threading.Thread):
                     # os.rename(src_file, dst_file)
 
                     print('preprocess file "%s"......' % filename)
-                    newname, iscrop = modisProcessing.main_processing.updateRaster(filename, leftlon, leftlat, rightlon, rightlat)
+                    newname, iscrop, crop_name = modisProcessing.main_processing.updateRaster(filename, leftlon, leftlat, rightlon, rightlat)
 
             zero_mark = False
             if len(filelist) != 0:
@@ -109,7 +110,7 @@ class check_process(threading.Thread):
             time.sleep(self.interval)
 
 if __name__ == '__main__':
-    process_interval = 300
+    process_interval = 180
     p = check_process(process_interval)
     p.start()
 
