@@ -103,7 +103,6 @@ class download_hdf(threading.Thread):
                         for i in range(len(lonlist)):
                             if lonlist[i] < 0:
                                 lonlist[i] = lonlist[i] + 360
-
                         maxCoord = np.max(lonlist)
                         minCoord = np.min(lonlist)
 
@@ -151,12 +150,12 @@ if __name__=="__main__":
     # parser.add_argument('--specified_email', help = 'specified_email', type = str, default = 'PolarSendReq@lamda.nju.edu.cn')
     args = parser.parse_args()
     interval_check = 600
-    interval_down = 1200
+    interval_down = 900
     queue = Queue.Queue(1)
 
     emailcheck = check_mail(interval_check, parser)
     hdfdownload = download_hdf(interval_down)
     emailcheck.start()
-    time.sleep(interval_check)
+    # time.sleep(interval_check)
     hdfdownload.start()
 
