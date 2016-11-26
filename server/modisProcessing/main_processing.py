@@ -9,14 +9,14 @@ import RasterManagement
 def updateRaster(filename, ullon, ullat, lrlon, lrlat):
     newfilename = preprocessing(filename)
     Get_Proba.predict(newfilename+'.band1.tif')
-    newnewfilename = postprocessing(newfilename, ullon, ullat, lrlon, lrlat)
+    newnewfilename, is_crop, crop_name = postprocessing(newfilename, ullon, ullat, lrlon, lrlat)
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '.tif', 'modispath/data/' + newnewfilename + '.tif')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.lonlat', 'test/' + newnewfilename + '.lonlat')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.prob', 'test/' + newnewfilename + '.prob')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.jpg', 'test/' + newnewfilename + '.jpg')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.cost', 'test/' + newnewfilename + '.cost')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.ice', 'test/' + newnewfilename + '.ice')
-    return newnewfilename
+    return newnewfilename, is_crop, crop_name
 
 def preprocessing(filename):
     PreprocessingManagement.hdf2tiff(filename)
@@ -33,9 +33,9 @@ def postprocessing(filename, ullon, ullat, lrlon, lrlat):
     RasterManagement.getLonLat(newfilename)
     RasterManagement.getProb(newfilename)
     # RasterManagement.putpixel(newfilename)
-    RasterManagement.cropandmask(ullon, ullat, lrlon, lrlat, newfilename)
+    is_crop, crop_name = RasterManagement.cropandmask(ullon, ullat, lrlon, lrlat, newfilename)
     print newfilename
-    return newfilename
+    return newfilename, is_crop, crop_name
 
 
 if __name__=="__main__":
