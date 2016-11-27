@@ -118,7 +118,7 @@ def checkemail(email,password,pop3_server,prenum):
                 if subj != None:
                     print(subj)
                     # for i in range(index):
-		    #     server.dele(i+1)
+		    # server.dele(i+1)
                     server.quit()
                     return index,subj
         except Exception as e:
