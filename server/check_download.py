@@ -91,32 +91,32 @@ class download_hdf(threading.Thread):
                         print 'from queue get ' + value
                         values = value.split(' ')
                         # print values
-                        rightlon = float(values[1])
-                        leftlon = float(values[0])
-                        rightlat = float(values[3])
-                        leftlat = float(values[2])
+                        EastBoundingCoord = float(values[1])
+                        WestBoundingCoord = float(values[0])
+                        SouthBoundingCoord = float(values[3])
+                        NorthBoundingCoord = float(values[2])
 
-                        lonlist, latlist = getCornerLonLats(leftlon, leftlat, rightlon, rightlat)
-                        SouthBoundingCoord = np.min(latlist)
-                        NorthBoundingCoord = np.max(latlist)
+#                         lonlist, latlist = getCornerLonLats(leftlon, leftlat, rightlon, rightlat)
+#                         SouthBoundingCoord = np.min(latlist)
+#                         NorthBoundingCoord = np.max(latlist)
 
-                        for i in range(len(lonlist)):
-                            if lonlist[i] < 0:
-                                lonlist[i] = lonlist[i] + 360
-                        maxCoord = np.max(lonlist)
-                        minCoord = np.min(lonlist)
+#                         for i in range(len(lonlist)):
+#                             if lonlist[i] < 0:
+#                                 lonlist[i] = lonlist[i] + 360
+#                         maxCoord = np.max(lonlist)
+#                         minCoord = np.min(lonlist)
 
-                        if maxCoord > 180:
-                            maxCoord = maxCoord - 360
-                        if minCoord > 180:
-                            minCoord = minCoord - 360
+#                         if maxCoord > 180:
+#                             maxCoord = maxCoord - 360
+#                         if minCoord > 180:
+#                             minCoord = minCoord - 360
 
-                        if maxCoord*minCoord < 0 and abs(maxCoord-minCoord) < 180:
-                            EastBoundingCoord = minCoord
-                            WestBoundingCoord = maxCoord
-                        else:
-                            EastBoundingCoord = maxCoord
-                            WestBoundingCoord = minCoord
+#                         if maxCoord*minCoord < 0 and abs(maxCoord-minCoord) < 180:
+#                             EastBoundingCoord = minCoord
+#                             WestBoundingCoord = maxCoord
+#                         else:
+#                             EastBoundingCoord = maxCoord
+#                             WestBoundingCoord = minCoord
 
                         done = modisdownload.Get_Modis.maindownloading(EastBoundingCoord, WestBoundingCoord, SouthBoundingCoord, NorthBoundingCoord)
                         # import random
@@ -150,7 +150,7 @@ if __name__=="__main__":
     # parser.add_argument('--specified_email', help = 'specified_email', type = str, default = 'PolarSendReq@lamda.nju.edu.cn')
     args = parser.parse_args()
     interval_check = 600
-    interval_down = 900
+    interval_down = 780
     queue = Queue.Queue(1)
 
     emailcheck = check_mail(interval_check, parser)
