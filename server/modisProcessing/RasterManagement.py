@@ -386,7 +386,7 @@ def getRGBfromProb(prob):
     return color
 
 
-def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MODIS/tiff/arcmapWorkspace/'):
+def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/arcmapWorkspace/'):
     tiffile = folder + fname + '.tif'
     lonlatfile = folder + fname + '.lonlat'
     probfile = folder + fname + '.prob'
@@ -417,9 +417,9 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     wgs84SpatialRef = osr.SpatialReference()
     wgs84SpatialRef.ImportFromWkt(wgs84_wkt)
 
-    tx = osr.CoordinateTransformation(wgs84SpatialRef, spatialRef)
-    (ulx, uly, tmp) = tx.TransformPoint(ullon, ullat)
-    (lrx, lry, tmp) = tx.TransformPoint(lrlon, lrlat)
+    # tx = osr.CoordinateTransformation(wgs84SpatialRef, spatialRef)
+    # (ulx, uly, tmp) = tx.TransformPoint(ullon, ullat)
+    # (lrx, lry, tmp) = tx.TransformPoint(lrlon, lrlat)
 
     print ulx, uly
     print lrx, lry
@@ -430,10 +430,11 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
     # print (geo_t[0]+geo_t[1]*x_size, geo_t[3]+geo_t[5]*y_size)
     # print (ulx, uly)
     # print (lrx, lry)
-    ulx = ulx - 800000 if ulx - 800000 > geo_t[0] else geo_t[0]
-    uly = uly + 800000 if uly + 800000 < geo_t[3] else geo_t[3]
-    lrx = lrx + 800000 if lrx + 800000 < geo_t[0] + geo_t[1]*x_size else geo_t[0] + geo_t[1]*x_size
-    lry = lry - 800000 if lry - 800000 > geo_t[3] + geo_t[5]*y_size else geo_t[3] + geo_t[5]*y_size
+    ulx = ulx - 400000 if ulx - 400000 > geo_t[0] else geo_t[0]
+    uly = uly + 400000 if uly + 400000 < geo_t[3] else geo_t[3]
+    lrx = lrx + 400000 if lrx + 400000 < geo_t[0] + geo_t[1]*x_size else geo_t[0] + geo_t[1]*x_size
+    lry = lry - 400000 if lry - 400000 > geo_t[3] + geo_t[5]*y_size else geo_t[3] + geo_t[5]*y_size
+    
 
     uli =  int(np.floor(np.round((ulx-geo_t[0])/geo_t[1])/5))*5
     ulj =  int(np.floor(np.round((uly-geo_t[3])/geo_t[5])/5))*5
@@ -534,5 +535,3 @@ def cropandmask(ullon, ullat, lrlon, lrlat, fname, folder = 'modisProcessing/MOD
 
     return True, crop_name
 
-
-    
