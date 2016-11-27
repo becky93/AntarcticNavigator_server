@@ -6,17 +6,17 @@ import Get_Proba
 import RasterManagement
 
 
-def updateRaster(filename, ullon, ullat, lrlon, lrlat):
+def updateRaster(filename, ulx, uly, lrx, lry):
     newfilename = preprocessing(filename)
     Get_Proba.predict(newfilename+'.band1.tif')
-    newnewfilename, is_crop, crop_name = postprocessing(newfilename, ullon, ullat, lrlon, lrlat)
+    newnewfilename, iscrop, crop_name = postprocessing(newfilename, ulx, uly, lrx, lry)
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '.tif', 'modispath/data/' + newnewfilename + '.tif')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.lonlat', 'test/' + newnewfilename + '.lonlat')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.prob', 'test/' + newnewfilename + '.prob')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.jpg', 'test/' + newnewfilename + '.jpg')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.cost', 'test/' + newnewfilename + '.cost')
     # shutil.copy('modisProcessing/MODIS/tiff/arcmapWorkspace/' + newnewfilename + '_crop.ice', 'test/' + newnewfilename + '.ice')
-    return newnewfilename, is_crop, crop_name
+    return newnewfilename, iscrop, crop_name
 
 def preprocessing(filename):
     PreprocessingManagement.hdf2tiff(filename)
@@ -28,14 +28,14 @@ def preprocessing(filename):
     return '.'.join(newfilename1.split('.')[0:-1])
 
 
-def postprocessing(filename, ullon, ullat, lrlon, lrlat):
+def postprocessing(filename, ulx, uly, lrx, lry):
     newfilename = RasterManagement.add2CurrentRaster(filename+'.band2.tif')
     RasterManagement.getLonLat(newfilename)
     RasterManagement.getProb(newfilename)
     # RasterManagement.putpixel(newfilename)
-    is_crop, crop_name = RasterManagement.cropandmask(ullon, ullat, lrlon, lrlat, newfilename)
+    iscrop, crop_name = RasterManagement.cropandmask(ulx, uly, lrx, lry, newfilename)
     print newfilename
-    return newfilename, is_crop, crop_name
+    return newfilename, iscrop, crop_name
 
 
 if __name__=="__main__":
