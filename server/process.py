@@ -82,7 +82,7 @@ class check_process(threading.Thread):
 
                 if fileset != []:
                     if zero_mark and value != self.cu_range:
-                        newfilename = str(fileset[0]) + '_CURRENT_RASTER_1000'
+                        newfilename = str(fileset[0]) + '_CURRENT_RASTER_250'
                         from modisProcessing import RasterManagement
                         iscrop, crop_name = RasterManagement.cropandmask(ulx, uly, lrx, lry, newfilename)
 

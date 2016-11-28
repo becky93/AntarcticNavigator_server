@@ -105,26 +105,26 @@ def add2CurrentRaster(filename, folder = 'modisProcessing/MODIS/tiff/'):
         curr_dataset = None
         dest = None
 
-    dest = gdal.Open(workspace + str(next_no) + '_CURRENT_RASTER_250.tif', GA_ReadOnly)
-    x_size = dest.RasterXSize # Raster xsize
-    y_size = dest.RasterYSize # Raster ysize
-    new_drv = gdal.GetDriverByName('GTiff')
-    new_dest = new_drv.Create(workspace + str(next_no) + '_CURRENT_RASTER_1000.tif', int(x_size/(1000/250)), int(y_size/(1000/250)), 1, gdal.GDT_Byte)
-    geo_t = dest.GetGeoTransform()
-    geo = (geo_t[0], 1000.0, 0.0, geo_t[3], 0.0, -1000.0)
-    print geo
-    new_dest.SetGeoTransform(geo)
-    new_dest.SetProjection(dest.GetProjection())
-    gdal.ReprojectImage(dest, new_dest, dest.GetProjection(), new_dest.GetProjection(), gdal.GRA_NearestNeighbour)
-    new_dest = None
+    # dest = gdal.Open(workspace + str(next_no) + '_CURRENT_RASTER_250.tif', GA_ReadOnly)
+    # x_size = dest.RasterXSize # Raster xsize
+    # y_size = dest.RasterYSize # Raster ysize
+    # new_drv = gdal.GetDriverByName('GTiff')
+    # new_dest = new_drv.Create(workspace + str(next_no) + '_CURRENT_RASTER_1000.tif', int(x_size/(1000/250)), int(y_size/(1000/250)), 1, gdal.GDT_Byte)
+    # geo_t = dest.GetGeoTransform()
+    # geo = (geo_t[0], 1000.0, 0.0, geo_t[3], 0.0, -1000.0)
+    # print geo
+    # new_dest.SetGeoTransform(geo)
+    # new_dest.SetProjection(dest.GetProjection())
+    # gdal.ReprojectImage(dest, new_dest, dest.GetProjection(), new_dest.GetProjection(), gdal.GRA_NearestNeighbour)
+    # new_dest = None
 
-    dataset = gdal.Open(workspace + str(next_no) + '_CURRENT_RASTER_1000.tif', GA_ReadOnly)
+    dataset = gdal.Open(workspace + str(next_no) + '_CURRENT_RASTER_250.tif', GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     array = band.ReadAsArray()
     tifimg = Image.fromarray(array)
-    tifimg.save(workspace + str(next_no) + '_CURRENT_RASTER_1000.jpg')
+    tifimg.save(workspace + str(next_no) + '_CURRENT_RASTER_250.jpg')
 
-    return str(next_no) + '_CURRENT_RASTER_1000'
+    return str(next_no) + '_CURRENT_RASTER_250'
 
 
 def getLonLat(filename, folder = 'modisProcessing/MODIS/tiff/arcmapWorkspace/'):
@@ -156,15 +156,15 @@ def getLonLat(filename, folder = 'modisProcessing/MODIS/tiff/arcmapWorkspace/'):
 
     geo_t = dataset.GetGeoTransform()
     print geo_t
-    new_y_size = int(math.floor(y_size/5))
-    new_x_size = int(math.floor(x_size/5))
+    new_y_size = int(math.floor(y_size/20))
+    new_x_size = int(math.floor(x_size/20))
     print new_x_size, new_y_size
     lonlats = np.ones((new_y_size, new_x_size, 2))
 
     for i in range(new_x_size):
         for j in range(new_y_size):
             # print geo_t[0]+geo_t[1]*(i*5+2.5), geo_t[3]+geo_t[5]*(j*5+2.5)
-            (lonlats[j, i, 0] ,lonlats[j, i, 1], tmp) = tx.TransformPoint(geo_t[0]+geo_t[1]*(i*5+2.5), geo_t[3]+geo_t[5]*(j*5+2.5))
+            (lonlats[j, i, 0] ,lonlats[j, i, 1], tmp) = tx.TransformPoint(geo_t[0]+geo_t[1]*(i*20+10), geo_t[3]+geo_t[5]*(j*20+10))
 
     file = open(folder+filename+'.lonlat', 'wb')
     pickle.dump(lonlats, file, protocol=2)
@@ -224,19 +224,19 @@ def getProb(tiff_name, prob_folder = 'modisProcessing/MODIS/Proba/', ice_folder 
 
     geo_t = dataset.GetGeoTransform()
     print geo_t
-    new_y_size = int(math.floor(y_size/5))
-    new_x_size = int(math.floor(x_size/5))
+    new_y_size = int(math.floor(y_size/20))
+    new_x_size = int(math.floor(x_size/20))
     print new_x_size, new_y_size
     probs = np.ones((new_y_size, new_x_size, 3))
     ices = np.ones((new_y_size, new_x_size))
 
     for i in range(new_x_size):
         for j in range(new_y_size):
-            x = geo_t[0]+geo_t[1]*(i*5+2.5)
-            y = geo_t[3]+geo_t[5]*(j*5+2.5)
+            x = geo_t[0]+geo_t[1]*(i*20+10)
+            y = geo_t[3]+geo_t[5]*(j*20+10)
             probs[j, i] = [np.nan, np.nan, np.nan]
             ices[j, i] = 0
-            if array[j*5+2, i*5+2] != 255:
+            if array[j*20+8, i*20+8] != 255:
                 for k in range(len(file_list)):
                     file_info = file_list[k]
                     if x >= file_info[2] and y <= file_info[3] and x <= file_info[2]+file_info[5]*file_info[4] and y >= file_info[3] \
@@ -354,9 +354,6 @@ def getRGBfromProb(prob):
     Rslipts = [0, 0, 0, 55, 155, 255, 255, 255, 225, 180, 128]
     Gslipts = [0, 0, 0, 55, 155, 255, 150, 50, 0, 0, 0]
     Bslipts = [80, 150, 220, 255, 255, 255, 150, 50, 0, 0, 0]
-    # Rslipts = [128, 180, 225, 255, 255, 255, 155, 55, 0, 0, 0, 0]
-    # Gslipts = [0, 0, 0, 50, 150, 255, 155, 55, 0, 0, 0, 0]
-    # Bslipts = [0, 0, 0, 50, 150, 255, 255, 255, 220, 150, 80, 80]
 
     flat_R = np.zeros((len(flat_prob), 1))
     flat_G = np.zeros((len(flat_prob), 1))
@@ -436,10 +433,10 @@ def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/
     lry = lry - 400000 if lry - 400000 > geo_t[3] + geo_t[5]*y_size else geo_t[3] + geo_t[5]*y_size
     
 
-    uli =  int(np.floor(np.round((ulx-geo_t[0])/geo_t[1])/5))*5
-    ulj =  int(np.floor(np.round((uly-geo_t[3])/geo_t[5])/5))*5
-    lri =  int(np.floor(np.round((lrx-geo_t[0])/geo_t[1])/5))*5
-    lrj =  int(np.floor(np.round((lry-geo_t[3])/geo_t[5])/5))*5
+    uli =  int(np.floor(np.round((ulx-geo_t[0])/geo_t[1])/20))*20
+    ulj =  int(np.floor(np.round((uly-geo_t[3])/geo_t[5])/20))*20
+    lri =  int(np.floor(np.round((lrx-geo_t[0])/geo_t[1])/20))*20
+    lrj =  int(np.floor(np.round((lry-geo_t[3])/geo_t[5])/20))*20
     # print (uli, ulj)
     # print (lri, lrj)
 
@@ -463,13 +460,13 @@ def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/
         return False, ''
 
     cu_time = time.strftime("%Y%m%d%H%M%S",time.localtime(time.time()))
-    crop_name = cu_time + '_CURRENT_RASTER_1000'
+    crop_name = cu_time + '_CURRENT_RASTER_250'
     # print jpg.size
     jpg_crop = jpg.crop((uli, ulj, lri, lrj))
     # print jpg_crop.size
     jpg_crop.save(folder + crop_name + '_crop.jpg')
 
-    lonlat_crop = lonlat[ulj/5:lrj/5, uli/5:lri/5, :]
+    lonlat_crop = lonlat[ulj/20:lrj/20, uli/20:lri/20, :]
     # print lonlat_crop.shape
     pickle.dump(lonlat_crop, open(folder + crop_name + '_crop.lonlat', 'wb'), protocol=2)
 
@@ -481,11 +478,10 @@ def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/
     mask = np.load('modisProcessing/mask.npy')
 
     # print mask.shape
-    prob_crop = np.copy(prob[ulj/5:lrj/5, uli/5:lri/5, :])
-    ice_crop = np.copy(ice[ulj/5:lrj/5, uli/5:lri/5])
-    # print lrj/5-ulj/5, lri/5-uli/5
-    for i in range(0, lrj/5-ulj/5):
-        for j in range(0, lri/5-uli/5):
+    prob_crop = np.copy(prob[ulj/20:lrj/20, uli/20:lri/20, :])
+    ice_crop = np.copy(ice[ulj/20:lrj/20, uli/20:lri/20])
+    for i in range(0, lrj/20-ulj/20):
+        for j in range(0, lri/20-uli/20):
             # print i, j
             (x, y, tmp) = tx2.TransformPoint(lonlat_crop[i,j,0], lonlat_crop[i,j,1])
             # print x, y
@@ -499,10 +495,6 @@ def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/
                     prob_crop[i,j,1] = 0.0
                     prob_crop[i,j,2] = 1.0
                     ice_crop[i,j] = 1
-                    # prob_crop[i,j,0] = 0.1*prob_crop[i,j,0]
-                    # prob_crop[i,j,1] = 0.1*prob_crop[i,j,1]
-                    # prob_crop[i,j,2] = 0.1*prob_crop[i,j,2]+0.9
-                    # jpg_crop_mask_array[i*5:i*5+5,j*5:j*5+5] = 255
                 elif masknum == 128:
                     if np.isnan(prob_crop[i,j,0]):
                         prob_crop[i,j,0] = 0.0
@@ -514,7 +506,6 @@ def cropandmask(ulx, uly, lrx, lry, fname, folder = 'modisProcessing/MODIS/tiff/
                         prob_crop[i,j,1] = 0.2*prob_crop[i,j,1]
                         prob_crop[i,j,2] = 0.2*prob_crop[i,j,2]+0.8
                         ice_crop[i,j] = 1
-                    # jpg_crop_mask_array[i*5:i*5+5,j*5:j*5+5] = 220
                 # else:
                 #     prob_crop[i,j,0] = 0.8*prob_crop[i,j,0]
                 #     prob_crop[i,j,1] = 0.8*prob_crop[i,j,1]
