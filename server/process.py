@@ -64,9 +64,10 @@ class check_process(threading.Thread):
             zero_mark = False
             if len(filelist) != 0:
                 # clear old files
-                import clearfile
-                clearfile.clear_raster()
-                clearfile.clear_files()
+                # import clearfile
+                # clearfile.clear_raster()
+                # clearfile.clear_files()
+                pass
             else:
                 zero_mark = True
 
